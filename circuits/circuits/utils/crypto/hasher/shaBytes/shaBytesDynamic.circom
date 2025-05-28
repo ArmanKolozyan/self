@@ -5,6 +5,7 @@ include "./dynamic/sha224Bytes.circom";
 include "@openpassport/zk-email-circuits/lib/sha.circom";
 include "./dynamic/sha384Bytes.circom";
 include "./dynamic/sha512Bytes.circom";
+include "circomlib/bitify.circom"; // needed for Num2Bits
 
 /// @title ShaBytesDynamic
 /// @notice Computes the hash of an input message using a specified hash length and padded input
@@ -26,6 +27,16 @@ template ShaBytesDynamic(hashLen, max_num_bytes) {
         hash_bits <== Sha384Bytes(max_num_bytes)(in_padded, in_len_padded_bytes);
     }
     if (hashLen == 256) {
+
+        // Checking the range of in_len_padded_bytes.
+        // This check is crucial for the soundness of Sha256Bytes.
+        // For details, see:
+        // https://github.com/zkemail/zk-email-verify/blob/b193cf0c760456b837b2bbcf7b2c72d5bb3f43c3/packages/circuits/lib/sha.circom#L87
+        var maxBitsPadded = max_num_bytes * 8;
+        var maxBitsPaddedBits = ceil(log2(maxBitsPadded));
+        component rangeCheck = Num2Bits(maxBitsPaddedBits);
+        rangeCheck.in <== in_len_padded_bytes * 8;
+
         hash_bits <== Sha256Bytes(max_num_bytes)(in_padded, in_len_padded_bytes);
     }
     if (hashLen == 224) { 
