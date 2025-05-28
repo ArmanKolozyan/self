@@ -5,7 +5,7 @@ include "./dynamic/sha224Bytes.circom";
 include "@openpassport/zk-email-circuits/lib/sha.circom";
 include "./dynamic/sha384Bytes.circom";
 include "./dynamic/sha512Bytes.circom";
-include "circomlib/bitify.circom"; // needed for Num2Bits
+include "circomlib/circuits/bitify.circom"; // needed for Num2Bits
 
 /// @title ShaBytesDynamic
 /// @notice Computes the hash of an input message using a specified hash length and padded input
