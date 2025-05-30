@@ -28,9 +28,12 @@ template ShaBytesDynamic(hashLen, max_num_bytes) {
     }
     if (hashLen == 256) {
 
-        // Checking the range of in_len_padded_bytes.
-        // This check is crucial for the soundness of Sha256Bytes.
-        // For details, see:
+        // Range check for the padded input length (in_len_padded_bytes).
+        // This check enforces that `in_len_padded_bytes * 8` can be represented using 
+        // `ceil(log2(max_num_bytes * 8))` bits, which is a requirement assumed by the 
+        // underlying SHA templates. Without this check, out-of-range values could 
+        // silently bypass internal constraints, leading to incorrect hash outputs.
+        // For more information, see:
         // https://github.com/zkemail/zk-email-verify/blob/b193cf0c760456b837b2bbcf7b2c72d5bb3f43c3/packages/circuits/lib/sha.circom#L87
         var maxBitsPadded = max_num_bytes * 8;
         var maxBitsPaddedBits = ceil(log2(maxBitsPadded));
@@ -44,9 +47,12 @@ template ShaBytesDynamic(hashLen, max_num_bytes) {
     }
     if (hashLen == 160) {
 
-        // Checking the range of in_len_padded_bytes.
-        // This check is crucial for the soundness of Sha1Bytes.
-        // For details, see:
+        // Range check for the padded input length (in_len_padded_bytes).
+        // This check enforces that `in_len_padded_bytes * 8` can be represented using 
+        // `ceil(log2(max_num_bytes * 8))` bits, which is a requirement assumed by the 
+        // underlying SHA templates. Without this check, out-of-range values could 
+        // silently bypass internal constraints, leading to incorrect hash outputs.
+        // For more information, see:
         // https://github.com/selfxyz/self/pull/579#issuecomment-2922842294
         var maxBitsPadded = max_num_bytes * 8;
         var maxBitsPaddedBits = ceil(log2(maxBitsPadded));
