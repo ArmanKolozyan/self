@@ -43,6 +43,16 @@ template ShaBytesDynamic(hashLen, max_num_bytes) {
         hash_bits <== Sha224Bytes(max_num_bytes)(in_padded, in_len_padded_bytes);
     }
     if (hashLen == 160) {
+
+        // Checking the range of in_len_padded_bytes.
+        // This check is crucial for the soundness of Sha1Bytes.
+        // For details, see:
+        // https://github.com/selfxyz/self/pull/579#issuecomment-2922842294
+        var maxBitsPadded = max_num_bytes * 8;
+        var maxBitsPaddedBits = ceil(log2(maxBitsPadded));
+        component rangeCheck = Num2Bits(maxBitsPaddedBits);
+        rangeCheck.in <== in_len_padded_bytes * 8;
+        
         hash_bits <== Sha1Bytes(max_num_bytes)(in_padded, in_len_padded_bytes);
     }
 
